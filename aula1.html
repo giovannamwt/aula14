@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<body>
+    <div id="screen">
+        <input type="text" id="username" placeholder="Nome de usuário">
+        <button onclick="share()">Buscar</button>
+    </div>
+    <div id="result"></div>
+    <script>
+        function share() {
+            const username = document.querySelector("#username").value;
+            const githubApi = `https://api.github.com/users/${username}`;
+            const resultDiv = document.querySelector("#result");
+
+            fetch(githubApi)
+                .then(response => {
+                    if (!response.ok) {
+                        throw "Usuário não encontrado";
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    resultDiv.innerHTML = '';
+
+                    const userName = document.createElement('h2');
+                    userName.textContent = data.login;
+
+                    const avatar = document.createElement('img');
+                    avatar.src = data.avatar_url;
+                    avatar.alt = `Avatar de ${data.login}`;
+                    avatar.width = 100;
+
+                    const bio = document.createElement('p');
+                    bio.textContent = data.bio ? data.bio : 'Sem biografia disponível';
+
+                    
+                    resultDiv.appendChild(userName);
+                    resultDiv.appendChild(avatar);
+                    resultDiv.appendChild(bio);
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p style="color: red;">${error}</p>`;
+                });
+        }
+    </script>
+</body>
+
+</html>

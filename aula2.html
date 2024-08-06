@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="cep" placeholder="Insira o CEP">
+    <button onclick="buscar()">Buscar</button>
+    <div id="result"></div>
+    
+<script>
+    function buscar() {
+        const cep = document.querySelector("#cep").value;
+        const cepApi = `https://viacep.com.br/ws/${cep}/json/`;
+        const resultDiv = document.querySelector("#result");
+
+        fetch(cepApi)
+            .then(response => {
+                if (!response.ok) {
+                    throw "CEP não encontrado";
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                resultDiv.innerHTML = '';
+
+                const cepName = document.createElement('h2');
+                cepName.textContent = data.cep;
+
+                const logradouro = document.createElement('p');
+                logradouro.textContent = data.logradouro ? data.logradouro : 'Sem informação disponível';
+
+                const bairro = document.createElement('p');
+                bairro.textContent = data.bairro ? data.bairro : 'Sem informação disponível';
+
+                const localidade = document.createElement('p');
+                localidade.textContent = data.localidade ? data.localidade : 'Sem informação disponível';
+
+                const uf = document.createElement('p');
+                uf.textContent = data.uf ? data.uf : 'Sem informação disponível';
+
+                resultDiv.appendChild(cepName);
+                resultDiv.appendChild(logradouro);
+                resultDiv.appendChild(bairro);
+                resultDiv.appendChild(localidade);
+                resultDiv.appendChild(uf);
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `<p style="color: red;">${error}</p>`;
+            });
+    }
+</script>
+</body>
+</html>

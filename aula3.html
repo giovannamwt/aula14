@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    Atividade 03
+    Você está desenvolvendo um aplicativo que utiliza a PokéAPI para exibir
+    informações sobre Pokémon. Os usuários podem pesquisar Pokémon por
+    nome ou número da Pokédex.
+    Link de onde encontrar API: https://pokeapi.co/docs/v2
+    Link da API: https://pokeapi.co/api/v2/pokemon/{nome_pokemon}
+
+    <input type="text" id="nome" placeholder="Nome do Pokémon">
+    <button onclick="buscar()">Buscar</button>
+    <div id="result"></div>
+
+    <script>
+        function buscar() {
+            const nome = document.querySelector("#nome").value.toLowerCase();
+            const pokeApi = `https://pokeapi.co/api/v2/pokemon/${nome}`;
+            const resultDiv = document.querySelector("#result");
+
+            fetch(pokeApi)
+                .then(response => {
+                    if (!response.ok) {
+                        throw "não encontrado";
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    resultDiv.innerHTML = '';
+
+                    // Iterar sobre as chaves do objeto retornado e exibir seus valores
+                    for (const key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            const value = data[key];
+                            const info = document.createElement('p');
+                            info.textContent = `${key}: ${JSON.stringify(value, null, 2)}`;
+                            resultDiv.appendChild(info);
+                        }
+                    }
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p style="color: red;">${error}</p>`;
+                });
+        }
+    </script>
+</body>
+</html>
